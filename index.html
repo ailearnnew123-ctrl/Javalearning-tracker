@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Progress Tracker</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f9; }
+        table { width: 100%; border-collapse: collapse; background: white; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background: #eee; }
+        .num-col { width: 30px; text-align: center; font-weight: bold; }
+        .check-col { width: 40px; text-align: center; }
+        input[type="text"] { width: 95%; border: none; outline: none; font-size: 14px; }
+        .save-btn { margin-bottom: 20px; padding: 10px 20px; cursor: pointer; background: #28a745; color: white; border: none; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+    <h2>My Learning Roadmap</h2>
+    <button class="save-btn" onclick="saveData()">Save Progress</button>
+
+    <table id="progressTable">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Java Topic / Progress</th>
+                <th>Done</th>
+                <th>Git Topic / Progress</th>
+                <th>Done</th>
+                <th>Certification Status</th>
+                <th>Done</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            </tbody>
+    </table>
+
+    <script>
+        // Generate 30 rows
+        const tbody = document.getElementById('tableBody');
+        for (let i = 1; i <= 30; i++) {
+            tbody.innerHTML += `
+                <tr>
+                    <td class="num-col">${i}</td>
+                    <td><input type="text" id="java-${i}"></td>
+                    <td class="check-col"><input type="checkbox" id="java-check-${i}"></td>
+                    <td><input type="text" id="git-${i}"></td>
+                    <td class="check-col"><input type="checkbox" id="git-check-${i}"></td>
+                    <td><input type="text" id="cert-${i}"></td>
+                    <td class="check-col"><input type="checkbox" id="cert-check-${i}"></td>
+                </tr>`;
+        }
+
+        // Save to LocalStorage
+        function saveData() {
+            const data = {};
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                data[input.id] = input.type === 'checkbox' ? input.checked : input.value;
+            });
+            localStorage.setItem('roadmapData', JSON.stringify(data));
+            alert('Progress saved locally!');
+        }
+
+        // Load data on page refresh
+        window.onload = () => {
+            const savedData = JSON.parse(localStorage.getItem('roadmapData'));
+            if (savedData) {
+                Object.keys(savedData).forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        if (el.type === 'checkbox') el.checked = savedData[id];
+                        else el.value = savedData[id];
+                    }
+                });
+            }
+        };
+    </script>
+</body>
+</html>
